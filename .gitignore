@@ -1,0 +1,6 @@
+*.mat
+*log*
+show_result.m
+test_speed.m
+*.swp
+*.asv
