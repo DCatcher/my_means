@@ -8,11 +8,14 @@ randn('state', 0);
 disp(varargin)
 pars    = pars_initial(varargin);
 pars    = parseArgs(varargin ,pars);
-disp(pars);
-pause;
+
+pars.result_save    = [pars.result_pre 'result_' pars.time_now];
+pars.log_save  	 	= [pars.log_pre 'log_' pars.time_now];
 
 diary(pars.log_save);
 diary on;
+
+disp(pars);
 tic
 
 for runno=1:pars.runno

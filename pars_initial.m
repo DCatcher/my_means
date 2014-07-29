@@ -22,8 +22,6 @@ tmp_clock       	= clock;
 pars.time_now   	= [int2str(tmp_clock(1)) int2str(tmp_clock(2)) int2str(tmp_clock(3)) 'T' int2str(tmp_clock(4)) int2str(tmp_clock(5))];
 pars.result_pre 	= 'd:/dataset/Kmeans_data/result/';
 pars.log_pre    	= 'd:/dataset/Kmeans_data/logs/';
-pars.result_save    = [pars.result_pre 'result_' pars.time_now];
-pars.log_save  	 	= [pars.log_pre 'log_' pars.time_now];
 
 pars.from_existed_data 	= 0;
 pars.existed_data 		= [pars.result_pre ''];
