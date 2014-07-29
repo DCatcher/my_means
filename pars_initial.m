@@ -40,4 +40,4 @@ pars.runno 			= 1;
 pars.show_num 		= 25;
 pars.row_num 		= 20;
 pars.max_frames 	= 4;
-
+pars.max_show       = 40;
