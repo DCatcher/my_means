@@ -5,8 +5,8 @@ pars 				= struct();
 
 pars.L1 			= 1;
 pars.frame_num 		= 1;
-pars.patchsize 		= 14;
-pars.samplesize 	= 70000;
+pars.patchsize 		= 16;
+pars.samplesize 	= 100000;
 
 pars.display 		= 0;
 pars.display_inter 	= 1;
@@ -40,3 +40,6 @@ pars.row_num 		= 20;
 pars.max_frames 	= 4;
 pars.max_show       = 40;
 pars.loop_show      = 0;
+
+pars.cal_loss       = 0;
+% pars.fix_sparsity   = 1;

@@ -6,7 +6,7 @@ for itr = 1:pars.iterations
     X = pars.X_total(randsample(size(pars.X_total,1), pars.resample_size),:);
     x2 = sum(X.^2,2);
     
-    c2 = 0.5*sum(pars.centroids.^2,2);
+%     c2 = 0.5*sum(pars.centroids.^2,2);
     
     summation = zeros(pars.hidnum, size(X,2));
     counts = zeros(pars.hidnum, 1);
@@ -17,7 +17,8 @@ for itr = 1:pars.iterations
         lastIndex=min(i+pars.BATCH_SIZE-1, size(X,1));
         m = lastIndex - i + 1;
         
-        temp = bsxfun(@minus,pars.centroids*X(i:lastIndex,:)',c2);
+%         temp = bsxfun(@minus,pars.centroids*X(i:lastIndex,:)',c2);
+        temp    = pars.centroids*X(i:lastIndex, :)';
         
 %         %use threshold
 %         maxval = max(temp); minval = min(temp);
@@ -29,7 +30,9 @@ for itr = 1:pars.iterations
         [S, labels]     = resp_with_Labels(temp,pars.L1);
         labels          = [i:lastIndex;labels];
 
-        loss = loss+trace(S*(0.5*ones(pars.hidnum,1)*x2(i:lastIndex)'-temp));
+        if pars.cal_loss == 1
+            loss = loss+trace(S*(0.5*ones(pars.hidnum,1)*x2(i:lastIndex)'-temp));
+        end
         summation = summation + S'*X(i:lastIndex,:);
         counts = counts + sum(S,1)';
     end
@@ -46,14 +49,21 @@ for itr = 1:pars.iterations
 
 	pars.show_label 	= show_label;
     
-    pars.centroids = bsxfun(@rdivide, summation, counts);
+    pars.centroids      = bsxfun(@rdivide, summation, counts);
   
     % just zap empty centroids so they don't introduce NaNs everywhere.
-    badIndex = find(counts == 0);
-    pars.centroids(badIndex, :) = 0;
+%     badIndex = find(counts == 0);
+    pars.centroids(counts == 0, :) = 0;
     
-    fprintf('K-means iterations  %d,  sparsity %g, overall loss %g\n',...
-        itr, sum(counts)/pars.resample_size/pars.hidnum, loss);
+    pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2))+0.00001);
+    
+    fprintf('K-means iterations  %d,  sparsity %g',...
+        itr, sum(counts)/pars.resample_size/pars.hidnum);
+    if pars.cal_loss==1
+        fprintf(', overall loss %g\n', loss);
+    else
+        fprintf('\n');
+    end
     
     if mod(itr,pars.display_inter)==0 && pars.display==1
 		visualize(pars);

@@ -3,7 +3,11 @@ function visualize(pars)
 
 cent_global_norm_all        = pars.centroids./(ones(size(pars.centroids,2), 1)*max(abs(pars.centroids')))';
 tmp_length                  = min(size(pars.centroids, 1), pars.max_show);
-cent_global_norm            = cent_global_norm_all(randsample(size(cent_global_norm_all, 1), tmp_length), :);
+if size(pars.centroids, 1) > pars.max_show
+    cent_global_norm            = cent_global_norm_all(randsample(size(cent_global_norm_all, 1), tmp_length), :);
+else
+    cent_global_norm            = cent_global_norm_all;
+end
 
 frame_num_now   = min(pars.frame_num, pars.max_frames);
 

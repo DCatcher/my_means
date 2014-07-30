@@ -48,6 +48,4 @@ end
 
 pars.X_total 	= pars.X_total';
 pars.X_total 	= bsxfun(@minus, pars.X_total, mean(pars.X_total,1));    
-for i=1:size(pars.X_total,1)
-	pars.X_total(i,:) 	= pars.X_total(i,:)/sqrt(norm(pars.X_total(i,:))^2);
-end
+pars.X_total    = bsxfun(@rdivide, pars.X_total, sqrt(sum(pars.X_total.^2, 2)));

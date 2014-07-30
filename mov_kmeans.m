@@ -5,6 +5,8 @@ close all
 rand('state', 0);
 randn('state', 0);
 
+addpath('MinMaxSelection_cg');
+
 disp(varargin)
 pars    = pars_initial(varargin);
 pars    = parseArgs(varargin ,pars);
