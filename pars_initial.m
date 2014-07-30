@@ -12,11 +12,11 @@ pars.display 		= 0;
 pars.display_inter 	= 1;
 
 pars.display_vertical 	= 1;
-pars.vertical_figure 	= 1;
+pars.vertical_figure 	= 2;
 pars.display_horizont 	= 1;
-pars.horizont_figure 	= 2;
+pars.horizont_figure 	= 3;
 pars.display_result 	= 1;
-pars.result_figure 		= 3;
+pars.result_figure 		= 1;
 
 tmp_clock       	= clock;
 pars.time_now   	= [int2str(tmp_clock(1)) int2str(tmp_clock(2)) int2str(tmp_clock(3)) 'T' int2str(tmp_clock(4)) int2str(tmp_clock(5))];
@@ -39,3 +39,4 @@ pars.show_num 		= 25;
 pars.row_num 		= 20;
 pars.max_frames 	= 4;
 pars.max_show       = 40;
+pars.loop_show      = 0;
