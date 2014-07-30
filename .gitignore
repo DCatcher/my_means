@@ -1,7 +1,7 @@
 *.mat
 *log*
-show_result.m
-test_speed.m
+show_result*
+test_speed*
 *.swp
 *.asv
 MinMaxSelection*
