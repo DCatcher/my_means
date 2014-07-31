@@ -34,6 +34,9 @@ pars.centroids 		= [];
 pars.BATCH_SIZE 	= 1000;
 pars.resample_size 	= 50000;
 pars.runno 			= 1;
+pars.counts         = [];
+pars.old_cent       = [];
+pars.diff_cent      = [];
 
 pars.show_num 		= 25;
 pars.row_num 		= 20;

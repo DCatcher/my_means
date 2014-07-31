@@ -49,6 +49,9 @@ for itr = 1:pars.iterations
 
 	pars.show_label 	= show_label;
     
+    pars.counts         = counts;
+    pars.old_cent       = pars.centroids;
+    
     pars.centroids      = bsxfun(@rdivide, summation, counts);
   
     % just zap empty centroids so they don't introduce NaNs everywhere.
@@ -57,8 +60,10 @@ for itr = 1:pars.iterations
     
     pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2))+0.00001);
     
-    fprintf('K-means iterations  %d,  sparsity %g',...
-        itr, sum(counts)/pars.resample_size/pars.hidnum);
+    pars.diff_cent(end+1)   = sqrt(mean(sum((pars.centroids - pars.old_cent).^2, 2)));
+    
+    fprintf('K-means iterations  %d,  sparsity %g, diff %g',...
+        itr, sum(counts)/pars.resample_size/pars.hidnum, pars.diff_cent(end));
     if pars.cal_loss==1
         fprintf(', overall loss %g\n', loss);
     else
