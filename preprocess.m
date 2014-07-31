@@ -1,7 +1,6 @@
 %% Do some preprocessing, NOT ONLY read and sample the data!
 % the data_path should include these things:
-%   IMAGES  : N1 * N2 * (num_video*num_frame)
-%       nf  : num_frame
+%   IMAGES  : cells of N1 * N2 * num_frame
 function pars = preprocess(pars)
 
 if pars.from_existed_data==1
@@ -18,32 +17,36 @@ end
 
 load(pars.data_path);
 
-num_images 	= floor(size(IMAGES,3)/nf)*(nf-pars.frame_num+1);
-image_size1 = size(IMAGES,1);
-image_size2 = size(IMAGES,2);
-sz 			= pars.patchsize;
-BUFF 		= 4;
-num_patches	= pars.samplesize;
-
-totalsamples 	= 0;
+% num_images 	= floor(size(IMAGES,3)/nf)*(nf-pars.frame_num+1);
+num_images      = length(IMAGES);
+num_patches     = pars.samplesize;
+sz              = pars.patchsize;
 pars.X_total 	= zeros(sz^2*pars.frame_num, num_patches);
-for ii=1:nf:(size(IMAGES,3)-nf)
-    for i=ii:1:ii+nf-pars.frame_num
-        this_image 	=IMAGES(:,:,i:(i+pars.frame_num-1));
-        getsample 	= floor(num_patches/num_images);
+totalsamples 	= 0;
 
-        if size(IMAGES, 3) - i< pars.frame_num, getsample = num_patches-totalsamples; end
+for ii=1:num_images
+    IMG_now     = IMAGES{ii};
+    image_size1 = size(IMG_now,1);
+    image_size2 = size(IMG_now,2);
+    image_size3 = size(IMG_now,3);
+    BUFF 		= 4;
+    
+    this_image  = IMG_now;
+    
+    getsample 	= floor(num_patches/num_images);
 
-        for j=1:getsample
-            r 	=BUFF+ceil((image_size1-sz-2*BUFF)*rand);
-            c 	=BUFF+ceil((image_size2-sz-2*BUFF)*rand);
+    if ii==num_images, getsample = num_patches-totalsamples; end
 
-            totalsamples 	= totalsamples + 1;
-            temp 			=reshape(this_image(r:r+sz-1,c:c+sz-1, :),sz^2*pars.frame_num,1);
+    for j=1:getsample
+        r 	= BUFF+ceil((image_size1-sz-2*BUFF)*rand);
+        c 	= BUFF+ceil((image_size2-sz-2*BUFF)*rand);
+        z   = randi(image_size3 - pars.frame_num);
 
-            pars.X_total(:,totalsamples) 	= temp - mean(temp);
-        end
-    end  
+        totalsamples 	= totalsamples + 1;
+        temp 			= reshape(this_image(r:r+sz-1,c:c+sz-1, z:z+pars.frame_num-1),sz^2*pars.frame_num,1);
+
+        pars.X_total(:,totalsamples) 	= temp;
+    end
 end
 
 pars.X_total 	= pars.X_total';
