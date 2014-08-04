@@ -67,3 +67,23 @@ end
 pars.X_total 	= pars.X_total';
 pars.X_total 	= bsxfun(@minus, pars.X_total, mean(pars.X_total,1));    
 pars.X_total    = bsxfun(@rdivide, pars.X_total, sqrt(sum(pars.X_total.^2, 2)));
+
+if pars.second_layer==1
+    if pars.from_existed_data ==0
+        error('Second layer must use first layer data!');
+    end
+    
+    load(pars.existed_data); 
+    
+    pars.first_layer_centroids      = pars_old.centroids;
+    pars.first_layer_L              = pars_old.L1;
+    clear pars_old
+    
+    temp    = pars.first_layer_centroids*pars.X_total';
+    
+    [pars.X_total, not_use]     = resp_with_Labels(temp, pars.first_layer_L);
+    
+    r_tmp           = rand(pars.hidnum, size(pars.X_total, 2));
+    g_tmp           = var(pars.X_total(1,:))/var(r_tmp(:));
+    pars.centroids  = (r_tmp-0.5)*sqrt(g_tmp) + mean(pars.X_total(1,:));
+end

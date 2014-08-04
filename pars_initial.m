@@ -54,3 +54,5 @@ pars.G_win          = [];
 pars.time_win       = 0;
 pars.twin_delta     = 6;
 pars.t_win          = [];
+
+pars.second_layer   = 0;

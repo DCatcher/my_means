@@ -1,7 +1,12 @@
 %% Visualize the result
 function visualize(pars)
 
-cent_global_norm_all        = pars.centroids./(ones(size(pars.centroids,2), 1)*max(abs(pars.centroids')))';
+if pars.second_layer==0
+    cent_global_norm_all        = pars.centroids./(ones(size(pars.centroids,2), 1)*max(abs(pars.centroids')))';
+else
+    tmp_centroids               = pars.centroids*pars.first_layer_centroids;
+    cent_global_norm_all        = tmp_centroids./(ones(size(tmp_centroids,2), 1)*max(abs(tmp_centroids')))';
+end
 tmp_length                  = min(size(pars.centroids, 1), pars.max_show);
 if size(pars.centroids, 1) > pars.max_show
     cent_global_norm            = cent_global_norm_all(randsample(size(cent_global_norm_all, 1), tmp_length), :);
