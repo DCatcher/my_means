@@ -46,3 +46,11 @@ pars.loop_show      = 0;
 
 pars.cal_loss       = 0;
 % pars.fix_sparsity   = 1;
+
+pars.gauss_win      = 0;
+pars.gwin_delta     = 6;
+pars.G_win          = [];
+
+pars.time_win       = 0;
+pars.twin_delta     = 6;
+pars.t_win          = [];

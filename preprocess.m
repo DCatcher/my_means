@@ -49,6 +49,21 @@ for ii=1:num_images
     end
 end
 
+if pars.gauss_win==1
+    tmp_G_win       = fspecial('gaussian', [pars.patchsize, pars.patchsize], pars.gwin_delta);
+    tmp_G_win       = tmp_G_win(:);
+    pars.G_win      = repmat(tmp_G_win, pars.frame_num, 1);
+    pars.X_total    = bsxfun(@times, pars.X_total, pars.G_win);
+end
+
+if pars.time_win==1
+    tmp_t_win       = fspecial('gaussian', [1, pars.frame_num*2], pars.twin_delta);
+    tmp_t_win       = tmp_t_win(pars.frame_num+1:end);
+    pars.t_win      = repmat(tmp_t_win, pars.patchsize^2, 1);
+    pars.t_win      = pars.t_win(:);
+    pars.X_total    = bsxfun(@times, pars.X_total, pars.t_win);
+end
+
 pars.X_total 	= pars.X_total';
 pars.X_total 	= bsxfun(@minus, pars.X_total, mean(pars.X_total,1));    
 pars.X_total    = bsxfun(@rdivide, pars.X_total, sqrt(sum(pars.X_total.^2, 2)));
