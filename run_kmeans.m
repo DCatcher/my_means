@@ -56,7 +56,16 @@ for itr = 1:pars.iterations
   
     % just zap empty centroids so they don't introduce NaNs everywhere.
 %     badIndex = find(counts == 0);
-    pars.centroids(counts == 0, :) = randn(sum(counts==0),pars.patchsize^2*pars.frame_num);
+    
+    if pars.second_layer==1
+        hid_tmp             = sum(counts==0);
+        r_tmp           = rand(hid_tmp, size(pars.X_total, 2));
+        g_tmp           = var(pars.X_total(1,:))/var(r_tmp(:));
+        
+        pars.centroids(counts == 0, :)      = (r_tmp-0.5)*sqrt(g_tmp) + mean(pars.X_total(1,:));
+    else
+        pars.centroids(counts == 0, :) = randn(sum(counts==0),pars.patchsize^2*pars.frame_num);
+    end
     
     pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2))+0.00001);
     
