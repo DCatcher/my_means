@@ -44,7 +44,7 @@ pars.max_frames 	= 4;
 pars.max_show       = 40;
 pars.loop_show      = 0;
 
-pars.cal_loss       = 0;
+pars.cal_loss       = 1;
 % pars.fix_sparsity   = 1;
 
 pars.gauss_win      = 0;
@@ -56,3 +56,10 @@ pars.twin_delta     = 6;
 pars.t_win          = [];
 
 pars.second_layer   = 0;
+
+pars.soft_coding    = 0;
+pars.threshold      = 0;
+pars.max_stride     = 0.05;
+pars.max_divide     = 60;
+
+pars.max_L          = 20; % it will adjust automatically later, be 4*L1

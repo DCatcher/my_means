@@ -15,6 +15,10 @@ else
 
 end
 
+if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
+    pars.max_L  = min(4*pars.L1, pars.hidnum);
+end
+
 load(pars.data_path);
 
 % num_images 	= floor(size(IMAGES,3)/nf)*(nf-pars.frame_num+1);
@@ -81,7 +85,10 @@ if pars.second_layer==1
     
     temp    = pars.first_layer_centroids*pars.X_total';
     
-    [pars.X_total, not_use]     = resp_with_Labels(temp, pars.first_layer_L);
+    pars.second_layer_L     = pars.L1;
+    pars.L1                 = pars.first_layer_L;
+    [pars.X_total, not_use, pars]     = resp_with_Labels(temp, pars);
+    pars.L1                 = pars.second_layer_L;
     
     r_tmp           = rand(pars.hidnum, size(pars.X_total, 2));
     g_tmp           = var(pars.X_total(1,:))/var(r_tmp(:));
