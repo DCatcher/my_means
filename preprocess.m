@@ -11,6 +11,10 @@ if pars.from_existed_data==1
     %add to satisfy the second layer
     pars.old_frame_num      = pars_old.frame_num;
     pars.old_patchsize      = pars_old.patchsize;
+
+    pars.first_layer_centroids      = pars_old.centroids;
+    pars.first_layer_L              = pars_old.L1;
+    pars.first_layer_hidnum         = pars_old.hidnum;
     
 	clear('pars_old');
 else
@@ -26,6 +30,10 @@ end
 if pars.second_layer==1
     if pars.time_type==1 && pars.frame_num~=pars.old_frame_num*2 && pars.time_bigger==1
         error('frame num should be twice the old frame num!\n');
+    end
+    
+    if pars.space_type==1 && pars.patchsize~=pars.old_patchsize*2 && pars.sapce_bigger==1
+        error('patchsize should be twice the old one!\n');
     end
 end
 
@@ -92,19 +100,11 @@ if pars.second_layer==1
     if pars.from_existed_data ==0
         error('Second layer must use first layer data!');
     end
-
-    load(pars.existed_data); 
-
-    pars.first_layer_centroids      = pars_old.centroids;
-    pars.first_layer_L              = pars_old.L1;
-    pars.first_layer_hidnum         = pars_old.hidnum;
-    
-    clear pars_old    
     
     X_total_reshape     = reshape(pars.X_total, pars.samplesize, ...
                             pars.patchsize^2, pars.frame_num);
                         
-    if pars.time_bigger==0
+    if pars.time_bigger==0 && pars.space_bigger==0
         temp    = pars.first_layer_centroids*pars.X_total';
 
         pars.second_layer_L     = pars.L1;
@@ -113,7 +113,7 @@ if pars.second_layer==1
         pars.L1                 = pars.second_layer_L;
     end
     
-    if pars.time_bigger==1
+    if pars.time_bigger==1 && pars.space_bigger==0
         if pars.time_type==1
             pars.time_sepa_num      = 2;
             pars.time_sepa_inter    = [1:pars.old_frame_num;pars.old_frame_num+1:2*pars.old_frame_num];
@@ -136,6 +136,48 @@ if pars.second_layer==1
             pars.L1             = pars.second_layer_L;
         end
         
+        pars.X_total    = tmp_X_total;
+    end
+    
+    if pars.space_bigger==1 && pars.time_bigger==0
+        X_total_reshape     = reshape(X_total_reshape, pars.samplesize, ...
+                            pars.patchsize, pars.patchsize, pars.frame_num);
+                        
+        if pars.space_type==1
+            pars.space_sepa_num     = 4;
+            sz                      = pars.old_patchsize;
+            pars.space_sepa_inter   = [1, sz, 1, sz;...
+                                        sz+1, sz*2, 1, sz;...
+                                        1, sz, sz+1, sz*2;...
+                                        sz+1, sz*2, sz+1, sz*2];
+            fh                      = pars.first_layer_hidnum;
+            pars.X_total_inter      = [1:fh;...
+                                        fh+1:fh*2;...
+                                        fh*2+1:fh*3;...
+                                        fh*3+1:fh*4];
+        end
+        
+        tmp_X_total     = zeros(pars.samplesize, pars.first_layer_hidnum*pars.space_sepa_num);
+        for i=1:pars.space_sepa_num
+            xst     = pars.space_sepa_inter(i,1);
+            xen     = pars.space_sepa_inter(i,2);
+            yst     = pars.space_sepa_inter(i,3);
+            yen     = pars.space_sepa_inter(i,4);
+            tmp_X_total_part    = X_total_reshape(:, xst:xen, yst:yen, :);
+%             size(tmp_X_total_part)
+            tmp_X_total_part    = reshape(tmp_X_total_part, size(tmp_X_total_part, 1), size(tmp_X_total_part, 2)*size(tmp_X_total_part, 3)*size(tmp_X_total_part, 4));
+            tmp_X_total_part 	= bsxfun(@minus, tmp_X_total_part, mean(tmp_X_total_part,1));    
+            tmp_X_total_part    = bsxfun(@rdivide, tmp_X_total_part, sqrt(sum(tmp_X_total_part.^2, 2)));            
+%             size(tmp_X_total_part)
+%             size(pars.first_layer_centroids)
+%             pause
+            temp                = pars.first_layer_centroids * tmp_X_total_part';
+            pars.second_layer_L = pars.L1;
+            pars.L1             = pars.first_layer_L;
+            [tmp_for_error, not_use, pars]     = resp_with_Labels(temp, pars);
+            tmp_X_total(:,pars.X_total_inter(i,:))  = tmp_for_error;
+            pars.L1             = pars.second_layer_L;
+        end
         pars.X_total    = tmp_X_total;
     end
 

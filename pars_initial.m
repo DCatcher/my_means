@@ -60,6 +60,9 @@ pars.second_layer   = 0;
 pars.time_bigger    = 0;
 pars.time_type      = 1;
 %   type = 1 : one by one, two times the first layer, without any overlap
+pars.space_bigger   = 0;
+pars.space_type     = 1;
+%   type = 1;  2 times of old patchsize, without any overlap
 
 pars.soft_coding    = 0;
 pars.threshold      = 0.2;
