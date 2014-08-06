@@ -44,7 +44,7 @@ pars.max_frames 	= 4;
 pars.max_show       = 40;
 pars.loop_show      = 0;
 
-pars.cal_loss       = 1;
+pars.cal_loss       = 0;
 % pars.fix_sparsity   = 1;
 
 pars.gauss_win      = 0;
@@ -57,11 +57,13 @@ pars.t_win          = [];
 pars.twin_present   = 0;
 
 pars.second_layer   = 0;
+pars.time_bigger    = 0;
+pars.time_type      = 1;
+%   type = 1 : one by one, two times the first layer, without any overlap
 
 pars.soft_coding    = 0;
 pars.threshold      = 0.2;
 pars.max_stride     = 0.01;
 pars.max_divide     = 0.1;
 pars.itr_interval   = 2;
-
 pars.max_L          = 20; % it will adjust automatically later, be 4*L1

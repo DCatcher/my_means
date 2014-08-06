@@ -4,7 +4,16 @@ function visualize(pars)
 if isfield(pars, 'second_layer')==0 || pars.second_layer==0
     cent_global_norm_all        = pars.centroids./(ones(size(pars.centroids,2), 1)*max(abs(pars.centroids')))';
 else
-    tmp_centroids               = pars.centroids*pars.first_layer_centroids;
+    if isfield(pars, 'time_bigger')==0 || pars.time_bigger==0
+        tmp_centroids               = pars.centroids*pars.first_layer_centroids;
+    end
+    
+    if isfield(pars, 'time_bigger')==1 && pars.time_bigger==1
+        tmp_centroids               = zeros(pars.hidnum, size(pars.first_layer_centroids, 2)*pars.time_sepa_num);
+        for i=1:pars.time_sepa_num
+            tmp_centroids(:, pars.centroids_inter(i,:))     = pars.centroids(:,pars.X_total_inter(i,:))*pars.first_layer_centroids;
+        end
+    end
     cent_global_norm_all        = tmp_centroids./(ones(size(tmp_centroids,2), 1)*max(abs(tmp_centroids')))';
 end
 
