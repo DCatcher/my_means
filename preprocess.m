@@ -62,7 +62,13 @@ end
 
 if pars.time_win==1
     tmp_t_win       = fspecial('gaussian', [1, pars.frame_num*2], pars.twin_delta);
-    tmp_t_win       = tmp_t_win(pars.frame_num+1:end);
+    
+    if isfield(pars, 'twin_present')==0 || pars.twin_present==0
+        tmp_t_win       = tmp_t_win(pars.frame_num+1:end);
+    else
+        tmp_t_win       = tmp_t_win(1:pars.frame_num);
+    end
+    
     pars.t_win      = repmat(tmp_t_win, pars.patchsize^2, 1);
     pars.t_win      = pars.t_win(:);
     pars.X_total    = bsxfun(@times, pars.X_total, pars.t_win);

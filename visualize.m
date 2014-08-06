@@ -1,7 +1,7 @@
 %% Visualize the result
 function visualize(pars)
 
-if pars.second_layer==0
+if isfield(pars, 'second_layer')==0 || pars.second_layer==0
     cent_global_norm_all        = pars.centroids./(ones(size(pars.centroids,2), 1)*max(abs(pars.centroids')))';
 else
     tmp_centroids               = pars.centroids*pars.first_layer_centroids;

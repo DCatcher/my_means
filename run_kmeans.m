@@ -49,9 +49,13 @@ for itr = 1:pars.iterations
     
     
     if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
-        mean_fire   = all_fire / size(X,1);
-        delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, abs(mean_fire - pars.L1)/pars.max_divide);
-        pars.threshold  = pars.threshold + delta_th;
+        mean_fire       = all_fire / size(X,1);
+        if  mod(itr,pars.itr_interval)==1
+            delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, exp(-1/(abs(mean_fire - pars.L1)*pars.max_divide)));
+            fprintf('%g\n', exp(-1/(abs(mean_fire - pars.L1)*pars.max_divide)));
+            pars.threshold  = pars.threshold + delta_th;
+            fprintf('threshold is :%g\n', pars.threshold);
+        end
     end
 %     fprintf('%f\n', mean_fire);
 %     
@@ -59,15 +63,18 @@ for itr = 1:pars.iterations
 %     pause;
 %     size(labels)
 
-    show_label  = zeros(pars.show_num*(pars.L1+1), size(pars.centroids, 2));
-    for i=1:pars.show_num
-        show_label((i-1)*(pars.L1+1) + 1,:)  = X(labels(1, i),:);
-        for j=1:pars.L1
-            show_label((i-1)*(pars.L1+1) + 1 + j,:)  = pars.centroids(labels(j+1, i),:);
+    if pars.display_result==1
+        new_L1      = min(pars.L1+1, size(labels, 1));
+        show_label  = zeros(pars.show_num*(new_L1), size(pars.centroids, 2));
+        for i=1:pars.show_num
+            show_label((i-1)*(new_L1) + 1,:)  = X(labels(1, i),:);
+            for j=2:new_L1
+                show_label((i-1)*(new_L1) + j,:)  = pars.centroids(labels(j, i),:);
+            end
         end
-    end
 
-	pars.show_label 	= show_label;
+        pars.show_label 	= show_label;
+    end
     
     pars.counts         = counts;
     pars.old_cent       = pars.centroids;

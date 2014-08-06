@@ -54,12 +54,14 @@ pars.G_win          = [];
 pars.time_win       = 0;
 pars.twin_delta     = 6;
 pars.t_win          = [];
+pars.twin_present   = 0;
 
 pars.second_layer   = 0;
 
 pars.soft_coding    = 0;
-pars.threshold      = 0;
-pars.max_stride     = 0.05;
-pars.max_divide     = 60;
+pars.threshold      = 0.2;
+pars.max_stride     = 0.01;
+pars.max_divide     = 0.1;
+pars.itr_interval   = 2;
 
 pars.max_L          = 20; % it will adjust automatically later, be 4*L1
