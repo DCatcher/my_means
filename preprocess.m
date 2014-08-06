@@ -32,7 +32,7 @@ if pars.second_layer==1
         error('frame num should be twice the old frame num!\n');
     end
     
-    if pars.space_type==1 && pars.patchsize~=pars.old_patchsize*2 && pars.sapce_bigger==1
+    if pars.space_type==1 && pars.patchsize~=pars.old_patchsize*2 && pars.space_bigger==1
         error('patchsize should be twice the old one!\n');
     end
 end
@@ -96,6 +96,7 @@ pars.X_total 	= pars.X_total';
 pars.X_total 	= bsxfun(@minus, pars.X_total, mean(pars.X_total,1));    
 pars.X_total    = bsxfun(@rdivide, pars.X_total, sqrt(sum(pars.X_total.^2, 2)));
 
+
 if pars.second_layer==1
     if pars.from_existed_data ==0
         error('Second layer must use first layer data!');
@@ -109,7 +110,8 @@ if pars.second_layer==1
 
         pars.second_layer_L     = pars.L1;
         pars.L1                 = pars.first_layer_L;
-        [pars.X_total, not_use, pars]     = resp_with_Labels(temp, pars);
+        [tmp_X_total, not_use, pars]     = resp_with_Labels(temp, pars);
+        pars.X_total            = tmp_X_total;
         pars.L1                 = pars.second_layer_L;
     end
     
