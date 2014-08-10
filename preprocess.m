@@ -3,10 +3,14 @@
 %   IMAGES  : cells of N1 * N2 * num_frame
 function pars = preprocess(pars)
 
+% disp(pars.second_layer);
+
 if pars.from_existed_data==1
 	load(pars.existed_data);
 
 	pars.centroids 	= pars_old.centroids;
+    pars.cent_corr      = pars.centroids * pars.centroids';
+    pars.cent_corr_pos  = max(pars.cent_corr, 0);
     
     %add to satisfy the second layer
     pars.old_frame_num      = pars_old.frame_num;
@@ -16,11 +20,10 @@ if pars.from_existed_data==1
     pars.first_layer_L              = pars_old.L1;
     pars.first_layer_hidnum         = pars_old.hidnum;
     
-	clear('pars_old');
 else
 
 	pars.centroids 	= randn(pars.hidnum,pars.patchsize^2*pars.frame_num)*0.1;
-
+    
 end
 
 if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
@@ -62,7 +65,11 @@ for ii=1:num_images
     for j=1:getsample
         r 	= BUFF+ceil((image_size1-sz-2*BUFF)*rand);
         c 	= BUFF+ceil((image_size2-sz-2*BUFF)*rand);
-        z   = randi(image_size3 - pars.frame_num);
+        if pars.frame_num < image_size3
+            z   = randi(image_size3 - pars.frame_num);
+        else
+            z   = 1;
+        end
 
         totalsamples 	= totalsamples + 1;
         temp 			= reshape(this_image(r:r+sz-1,c:c+sz-1, z:z+pars.frame_num-1),sz^2*pars.frame_num,1);
@@ -108,11 +115,11 @@ if pars.second_layer==1
     if pars.time_bigger==0 && pars.space_bigger==0
         temp    = pars.first_layer_centroids*pars.X_total';
 
-        pars.second_layer_L     = pars.L1;
-        pars.L1                 = pars.first_layer_L;
-        [tmp_X_total, not_use, pars]     = resp_with_Labels(temp, pars);
+%         pars.second_layer_L     = pars.L1;
+%         pars.L1                 = pars.first_layer_L;
+        [tmp_X_total, not_use, pars_old]     = resp_with_Labels(temp, pars_old);
         pars.X_total            = tmp_X_total;
-        pars.L1                 = pars.second_layer_L;
+%         pars.L1                 = pars.second_layer_L;
     end
     
     if pars.time_bigger==1 && pars.space_bigger==0
@@ -131,11 +138,11 @@ if pars.second_layer==1
             tmp_X_total_part 	= bsxfun(@minus, tmp_X_total_part, mean(tmp_X_total_part,1));    
             tmp_X_total_part    = bsxfun(@rdivide, tmp_X_total_part, sqrt(sum(tmp_X_total_part.^2, 2)));            
             temp                = pars.first_layer_centroids * tmp_X_total_part';
-            pars.second_layer_L = pars.L1;
-            pars.L1             = pars.first_layer_L;
-            [tmp_for_error, not_use, pars]     = resp_with_Labels(temp, pars);
+%             pars.second_layer_L = pars.L1;
+%             pars.L1             = pars.first_layer_L;
+            [tmp_for_error, not_use, pars_old]     = resp_with_Labels(temp, pars_old);
             tmp_X_total(:,pars.X_total_inter(i,:))  = tmp_for_error;
-            pars.L1             = pars.second_layer_L;
+%             pars.L1             = pars.second_layer_L;
         end
         
         pars.X_total    = tmp_X_total;
@@ -174,16 +181,26 @@ if pars.second_layer==1
 %             size(pars.first_layer_centroids)
 %             pause
             temp                = pars.first_layer_centroids * tmp_X_total_part';
-            pars.second_layer_L = pars.L1;
-            pars.L1             = pars.first_layer_L;
-            [tmp_for_error, not_use, pars]     = resp_with_Labels(temp, pars);
+%             pars.second_layer_L = pars.L1;
+%             pars.L1             = pars.first_layer_L;
+            [tmp_for_error, not_use, pars_old]     = resp_with_Labels(temp, pars_old);
             tmp_X_total(:,pars.X_total_inter(i,:))  = tmp_for_error;
-            pars.L1             = pars.second_layer_L;
+%             pars.L1             = pars.second_layer_L;
         end
         pars.X_total    = tmp_X_total;
     end
 
     r_tmp           = rand(pars.hidnum, size(pars.X_total, 2));
     g_tmp           = var(pars.X_total(1,:))/var(r_tmp(:));
-    pars.centroids  = (r_tmp-0.5)*sqrt(g_tmp) + mean(pars.X_total(1,:));            
+    pars.centroids  = (r_tmp-0.5)*sqrt(g_tmp) + mean(pars.X_total(1,:));      
 end
+
+if isfield(pars, 'part_empty')==1 && pars.part_empty==1
+    pars.empty_conn     = (rand(size(pars.centroids)) < pars.empty_rate);
+    
+    pars.centroids(pars.empty_conn)     = 0;
+end
+
+pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
+% disp(pars.second_layer);
+clear('pars_old');

@@ -19,7 +19,7 @@ pars.display_result 	= 1;
 pars.result_figure 		= 1;
 
 tmp_clock       	= clock;
-pars.time_now   	= [int2str(tmp_clock(1)) int2str(tmp_clock(2)) int2str(tmp_clock(3)) 'T' int2str(tmp_clock(4)) int2str(tmp_clock(5))];
+pars.time_now   	= [int2str(tmp_clock(1)) sprintf('%02d',tmp_clock(2)) sprintf('%02d',tmp_clock(3)) 'T' sprintf('%02d',tmp_clock(4)) sprintf('%02d',tmp_clock(5))];
 pars.result_pre 	= 'd:/dataset/Kmeans_data/result/';
 pars.log_pre    	= 'd:/dataset/Kmeans_data/logs/';
 
@@ -65,8 +65,14 @@ pars.space_type     = 1;
 %   type = 1;  2 times of old patchsize, without any overlap
 
 pars.soft_coding    = 0;
+pars.stable_stage   = 0;
 pars.threshold      = 0.2;
-pars.max_stride     = 0.01;
+pars.max_stride     = 0.02;
 pars.max_divide     = 0.1;
 pars.itr_interval   = 2;
 pars.max_L          = 20; % it will adjust automatically later, be 4*L1
+
+pars.part_empty     = 0;
+pars.empty_rate     = 0.5;
+
+pars.show_type      = 0;

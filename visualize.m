@@ -3,7 +3,7 @@ function visualize(pars)
 
 tmp_centroids               = get_centroids(pars);
 cent_global_norm_all        = tmp_centroids./(ones(size(tmp_centroids,2), 1)*max(abs(tmp_centroids')))';
-cent_global_norm_all        = cent_global_norm_all(pars.counts>0, :);
+% cent_global_norm_all        = cent_global_norm_all(pars.counts>0, :);
 
 tmp_length                  = min(size(pars.centroids, 1), pars.max_show);
 if size(pars.centroids, 1) > pars.max_show

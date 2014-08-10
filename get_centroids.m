@@ -1,10 +1,15 @@
 function tmp_centroids = get_centroids(pars)
 
-if isfield(pars, 'second_layer')==0 || pars.second_layer==0
+% disp('I am in all!');
+% disp(pars.second_layer);
+
+if isfield(pars, 'second_layer')==0 || pars.second_layer==0 || (isfield(pars, 'show_type')==1 && pars.show_type==1)
     tmp_centroids               = pars.centroids;
 else
+%     disp('I am in part!');
     if (isfield(pars, 'time_bigger')==0 || pars.time_bigger==0) && ...
        (isfield(pars, 'space_bigger')==0 || pars.space_bigger==0)
+%         disp('I am in!');
         tmp_centroids               = pars.centroids*pars.first_layer_centroids;
     end
     

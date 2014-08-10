@@ -2,6 +2,8 @@
 function pars = run_kmeans(pars)
 
 for itr = 1:pars.iterations
+    pars.cent_corr      = pars.centroids * pars.centroids';
+    pars.cent_corr_pos  = max(pars.cent_corr, 0);
     
     X = pars.X_total(randsample(size(pars.X_total,1), pars.resample_size),:);
     x2 = sum(X.^2,2);
@@ -51,8 +53,9 @@ for itr = 1:pars.iterations
     if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
         mean_fire       = all_fire / size(X,1);
         if  mod(itr,pars.itr_interval)==1
-            delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, exp(-1/(abs(mean_fire - pars.L1)*pars.max_divide)));
-            fprintf('%g\n', exp(-1/(abs(mean_fire - pars.L1)*pars.max_divide)));
+%             delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, exp(-1/(abs(mean_fire - pars.L1)*pars.max_divide)));
+            fprintf('%g\n', abs(mean_fire - pars.L1)*pars.max_divide);
+            delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, abs(mean_fire - pars.L1)*pars.max_divide);
             pars.threshold  = pars.threshold + delta_th;
             fprintf('threshold is :%g\n', pars.threshold);
         end
@@ -94,7 +97,12 @@ for itr = 1:pars.iterations
         pars.centroids(counts == 0, :) = randn(sum(counts==0),pars.patchsize^2*pars.frame_num);
     end
     
-    pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2))+0.00001);
+    if isfield(pars, 'part_empty')==1 && pars.part_empty==1
+        pars.centroids(pars.empty_conn)     = 0;
+    end
+    
+    
+    pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
     
     pars.diff_cent(end+1)   = sqrt(mean(sum((pars.centroids - pars.old_cent).^2, 2)));
     
