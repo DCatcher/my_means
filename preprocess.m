@@ -204,7 +204,7 @@ end
 pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
 
 if pars.LCA_second_layer==1
-    pars.second_layer_centroids     = randn(pars.LCA_second_hidnum, pars.hidnum);
+    pars.second_layer_centroids     = (rand(pars.LCA_second_hidnum, pars.hidnum) > pars.second_layer_init_part);
     pars.second_layer_centroids      = bsxfun(@rdivide, pars.second_layer_centroids, ...
                                             sqrt(sum(pars.second_layer_centroids.^2, 2)));
 end

@@ -98,6 +98,7 @@ pars.second_lambda          = 0.1;
 pars.second_row_num         = 10;
 pars.second_max_show        = 100;
 pars.second_lambda          = 0.05;
+pars.second_layer_init_part = 0.8;
 % code_type:
 %       0 : soft
 %       1 : hard

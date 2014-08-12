@@ -94,6 +94,10 @@ for itr = 1:pars.iterations
         if isfield(pars, 'soft_coding')==0 || pars.soft_coding==0
             mean_fire   = sum(counts)/pars.resample_size;
         end
+        
+    
+        fprintf('K-means iterations  %d,  mean fire %g, diff %g',...
+            itr, mean_fire, pars.diff_cent(end));        
     else
         pars.second_layer_centroids_expand      = pars.second_layer_centroids * pars.centroids;
         pars.second_layer_cent_corr             = pars.second_layer_centroids_expand * pars.second_layer_centroids_expand';
@@ -131,7 +135,7 @@ for itr = 1:pars.iterations
         pars.second_layer_centroids     = bsxfun(@rdivide, summation2, counts2);
         
         pars.centroids(counts1 == 0, :) = randn(sum(counts1==0),size(pars.centroids, 2));
-        pars.second_layer_centroids(counts2 == 0, :)    = randn(sum(counts2==0),pars.hidnum);
+        pars.second_layer_centroids(counts2 == 0, :)    = (rand(sum(counts2 == 0), pars.hidnum) > pars.second_layer_init_part);
         
         pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
         pars.second_layer_centroids      = bsxfun(@rdivide, pars.second_layer_centroids,...
@@ -139,11 +143,14 @@ for itr = 1:pars.iterations
         
         pars.diff_cent(end+1)   = sqrt(mean(sum((pars.centroids - pars.old_cent1).^2, 2))) + ...
                                   sqrt(mean(sum((pars.second_layer_centroids - pars.old_cent2).^2, 2)));
-        mean_fire   = (sum(counts1) + sum(counts2))/pars.resample_size;
-    end
+        mean_fire1   = sum(counts1)/pars.resample_size;
+        mean_fire2   = sum(counts2)/pars.resample_size;
+        
     
-    fprintf('K-means iterations  %d,  mean fire %g, diff %g',...
-        itr, mean_fire, pars.diff_cent(end));
+        fprintf('K-means iterations  %d,  mean fire %g, %g, diff %g',...
+            itr, mean_fire1,mean_fire2, pars.diff_cent(end));        
+    end
+
     if pars.cal_loss==1
         fprintf(', overall loss %g\n', loss/pars.resample_size);
     else
