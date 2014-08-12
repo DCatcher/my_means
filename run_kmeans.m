@@ -147,8 +147,8 @@ for itr = 1:pars.iterations
         mean_fire2   = sum(counts2)/pars.resample_size;
         
     
-        fprintf('K-means iterations  %d,  mean fire %g, %g, diff %g',...
-            itr, mean_fire1,mean_fire2, pars.diff_cent(end));        
+        fprintf('K-means iterations  %d,  mean fire %g, %g, counts none %d, %d, diff %g',...
+            itr, mean_fire1,mean_fire2,sum(counts1==0),sum(counts2==0), pars.diff_cent(end));
     end
 
     if pars.cal_loss==1
