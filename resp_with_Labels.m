@@ -2,6 +2,7 @@
 function [S, all_labels, pars]=resp_with_Labels(temp, pars)
     baktemp     = temp;
 	[hidnum,m]  = size(temp);
+    all_labels  = [];
 % 	S=zeros(size(temp))';
 %     all_labels  = [];
 % 	for i=1:iter
@@ -11,14 +12,14 @@ function [S, all_labels, pars]=resp_with_Labels(temp, pars)
 % 		temp = temp-S1'*1e10;
 % 		S=S+S1;
 % 	end
-    if isfield(pars, 'soft_coding')==0 || pars.soft_coding==0
+    if pars.soft_coding==0 && pars.LCA_coding==0
         iter    = pars.L1;
 
         [val, all_labels]  = maxk(temp, iter);
         
         tmp     = all_labels';
         S       = sparse(repmat(1:m, 1, iter), tmp(:)', 1, m, hidnum, iter*m);
-    else
+    elseif pars.soft_coding==1 && pars.LCA_coding==0
         
         S=zeros(size(temp))';
         all_labels  = [];
@@ -95,4 +96,46 @@ function [S, all_labels, pars]=resp_with_Labels(temp, pars)
                 S(big_place, :)     = S1(big_place, :);
             end
         end
+    elseif pars.soft_coding==0 && pars.LCA_coding==1
+        G   = pars.cent_corr - eye(pars.hidnum);
+        b   = baktemp;
+        
+        u   = zeros(pars.hidnum, m);
+        l   = 0.5*max(abs(b));
+        a   = g(u, l);
+        
+        for t=1:pars.LCA_iteration
+            u   = pars.eta*(b-G*a) + (1-pars.eta)*u;
+            a   = g(u, l, pars.thresh_type);
+            l   = pars.decay_rate * l;
+            
+            l(l<pars.lambda)     = pars.lambda;
+        end
+        
+        S   = a';
+    else
+        error('Wrong Set!');
     end
+    
+%% Calculate the non-linearity    
+    function a = g(u, theta, thresh_type)
+
+    if ~exist('thresh_type','var')
+        thresh_type = 'soft';
+    end
+
+    M = size(u,1);
+
+    switch thresh_type
+        case 'soft'
+            a = abs(u)-repmat(theta,M,1);
+            a(logical(a<0)) = 0;
+            a = sign(u).*a;
+        case 'hard'
+            a = u;
+            a(logical(abs(a)<repmat(theta,M,1))) = 0;
+        case 'hard+'
+            a = u;
+            a(logical(a<repmat(theta,M,1))) = 0;
+    end
+        

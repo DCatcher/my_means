@@ -32,7 +32,10 @@ for itr = 1:pars.iterations
         %fix sparsity 
 %         S=resp(temp,L1);
         [S, labels, pars]     = resp_with_Labels(temp, pars);
-        labels          = [i:lastIndex;labels];
+        
+        if pars.display_result==1
+            labels            = [i:lastIndex;labels];
+        end
 
 %         if pars.cal_loss == 1
 %             loss = loss+trace(S*(0.5*ones(pars.hidnum,1)*x2(i:lastIndex)'-temp));

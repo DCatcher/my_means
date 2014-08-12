@@ -77,8 +77,20 @@ pars.empty_rate     = 0.5;
 
 pars.show_type      = 0;
 
-pars.learn_type     = 1;
-pars.learning_part  = 0.5;
 % learn_type:
 %           1   :   Hebbian's learning
 %           2   :   Oja's learning
+pars.learn_type     = 1;
+pars.learning_part  = 0.5; %learning_part for Oja's learning
+
+pars.LCA_coding     = 0;
+pars.lambda         = 0.1;
+pars.eta          	= 0.1;
+pars.decay_rate     = 0.95;
+pars.init_rate      = 0.5;
+pars.thresh_type    = 'hard+';
+pars.LCA_iteration  = 75;
+% code_type:
+%       0 : soft
+%       1 : hard
+%       2 : hard+
