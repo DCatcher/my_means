@@ -90,6 +90,13 @@ pars.decay_rate     = 0.95;
 pars.init_rate      = 0.5;
 pars.thresh_type    = 'hard+';
 pars.LCA_iteration  = 75;
+
+pars.LCA_second_layer       = 0;
+pars.LCA_second_hidnum      = 100;
+pars.second_layer_centroids = [];
+pars.second_lambda          = 0.1;
+pars.second_row_num         = 10;
+pars.second_max_show        = 100;
 % code_type:
 %       0 : soft
 %       1 : hard

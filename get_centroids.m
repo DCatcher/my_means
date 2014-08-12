@@ -1,3 +1,4 @@
+%% Get the real centroids
 function tmp_centroids = get_centroids(pars)
 
 % disp('I am in all!');

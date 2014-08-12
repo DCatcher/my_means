@@ -202,5 +202,11 @@ if isfield(pars, 'part_empty')==1 && pars.part_empty==1
 end
 
 pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
+
+if pars.LCA_second_layer==1
+    pars.second_layer_centroids     = randn(pars.LCA_second_hidnum, pars.hidnum);
+    pars.second_layer_centroids      = bsxfun(@rdivide, pars.second_layer_centroids, ...
+                                            sqrt(sum(pars.second_layer_centroids.^2, 2)));
+end
 % disp(pars.second_layer);
 clear('pars_old');

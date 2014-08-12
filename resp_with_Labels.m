@@ -102,11 +102,11 @@ function [S, all_labels, pars]=resp_with_Labels(temp, pars)
         
         u   = zeros(pars.hidnum, m);
         l   = 0.5*max(abs(b));
-        a   = g(u, l);
+        a   = g_non_line(u, l);
         
         for t=1:pars.LCA_iteration
             u   = pars.eta*(b-G*a) + (1-pars.eta)*u;
-            a   = g(u, l, pars.thresh_type);
+            a   = g_non_line(u, l, pars.thresh_type);
             l   = pars.decay_rate * l;
             
             l(l<pars.lambda)     = pars.lambda;
@@ -115,27 +115,5 @@ function [S, all_labels, pars]=resp_with_Labels(temp, pars)
         S   = a';
     else
         error('Wrong Set!');
-    end
-    
-%% Calculate the non-linearity    
-    function a = g(u, theta, thresh_type)
-
-    if ~exist('thresh_type','var')
-        thresh_type = 'soft';
-    end
-
-    M = size(u,1);
-
-    switch thresh_type
-        case 'soft'
-            a = abs(u)-repmat(theta,M,1);
-            a(logical(a<0)) = 0;
-            a = sign(u).*a;
-        case 'hard'
-            a = u;
-            a(logical(abs(a)<repmat(theta,M,1))) = 0;
-        case 'hard+'
-            a = u;
-            a(logical(a<repmat(theta,M,1))) = 0;
     end
         
