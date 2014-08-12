@@ -28,7 +28,7 @@ for t=1:pars.LCA_iteration
     l1  = pars.decay_rate * l1;
     l2  = pars.decay_rate * l2;
     l1(l1<pars.lambda)     = pars.lambda;    
-    l2(l2<pars.lambda)     = pars.lambda;
+    l2(l2<pars.second_lambda)     = pars.second_lambda;
 end
 
 S1  = a1';
