@@ -76,3 +76,9 @@ pars.part_empty     = 0;
 pars.empty_rate     = 0.5;
 
 pars.show_type      = 0;
+
+pars.learn_type     = 1;
+pars.learning_part  = 0.5;
+% learn_type:
+%           1   :   Hebbian's learning
+%           2   :   Oja's learning

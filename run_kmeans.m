@@ -37,8 +37,18 @@ for itr = 1:pars.iterations
 %         if pars.cal_loss == 1
 %             loss = loss+trace(S*(0.5*ones(pars.hidnum,1)*x2(i:lastIndex)'-temp));
 %         end
-        summation = summation + S'*X(i:lastIndex,:);
+%         summation = summation + S'*X(i:lastIndex,:);
         counts = counts + sum(S,1)';
+        if pars.learn_type==2
+%             summation = summation + S'*(X(i:lastIndex,:) - S*pars.centroids);
+            for j=1:pars.hidnum
+                summation(j, :)     = summation(j,:) + S(:, j)'*( X(i:lastIndex, :) - pars.learning_part * S(:, j)*pars.centroids(j,:));
+            end
+        elseif pars.learn_type==1
+            summation = summation + S'*X(i:lastIndex,:);
+        else
+            error('Unknown learning type!');
+        end
 %         fprintf('%d\n', i);
         if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
             all_fire        = all_fire + sum(sum(S > pars.threshold));
@@ -52,7 +62,7 @@ for itr = 1:pars.iterations
     
     if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
         mean_fire       = all_fire / size(X,1);
-        if  mod(itr,pars.itr_interval)==1
+        if  mod(itr,pars.itr_interval)==0
 %             delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, exp(-1/(abs(mean_fire - pars.L1)*pars.max_divide)));
             fprintf('%g\n', abs(mean_fire - pars.L1)*pars.max_divide);
             delta_th        = sign(mean_fire - pars.L1)*min(pars.max_stride, abs(mean_fire - pars.L1)*pars.max_divide);
