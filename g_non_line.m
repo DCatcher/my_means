@@ -1,5 +1,5 @@
 %% Calculate the non-linearity    
-function a = g_non_line(u, theta, thresh_type)
+function a = g_non_line(u, theta, thresh_type, g_pars)
 
 if ~exist('thresh_type','var')
     thresh_type = 'soft';
@@ -18,4 +18,9 @@ switch thresh_type
     case 'hard+'
         a = u;
         a(logical(a<repmat(theta,M,1))) = 0;
+    case 'hard+sig'
+        a   = u;
+        a(logical(a<repmat(theta,M,1))) = 0;
+        a   = (g_pars.A./(1 + exp(-(a*g_pars.mul))) - g_pars.base)*g_pars.Out_A;
+%         a = (1./(1 + exp(-(a*20))) - 0.5)*0.5;
 end

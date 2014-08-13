@@ -103,6 +103,18 @@ pars.first_layer_learn_itr  = 1;
 pars.second_learning_rate   = 0.5;
 pars.first_learning_rate    = 0.5;
 
+pars.first_g_pars           = struct();
+pars.first_g_pars.A         = 1;
+pars.first_g_pars.mul       = 20;
+pars.first_g_pars.Out_A     = 0.5;
+pars.first_g_pars.base      = 0.5;
+
+pars.second_g_pars          = struct();
+pars.second_g_pars.A        = 1;
+pars.second_g_pars.mul      = 20;
+pars.second_g_pars.Out_A    = 0.5;
+pars.second_g_pars.base     = 0.5;
+
 pars.second_layer_using_existed_data    = 0;
 % code_type:
 %       0 : soft
