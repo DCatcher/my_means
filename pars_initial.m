@@ -78,7 +78,7 @@ pars.empty_rate     = 0.5;
 pars.show_type      = 0;
 
 pars.save_cent      = 0;
-
+pars.save_name      = 'test_speed_mat';
 % learn_type:
 %           1   :   Hebbian's learning
 %           2   :   Oja's learning

@@ -15,7 +15,7 @@ for itr = 1:pars.iterations
         if mod(itr, pars.save_cent)==0
             pars_tmp    = pars;
             pars_tmp.X_total    = [];
-            save test_speed_mat pars_tmp;
+            save(pars.save_name,'pars_tmp');
         end
     end
     
