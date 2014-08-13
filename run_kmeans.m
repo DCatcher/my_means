@@ -141,7 +141,8 @@ for itr = 1:pars.iterations
         mean_fire2   = sum(counts2)/pars.resample_size;
         
         if mod(itr, pars.first_layer_learn_itr)==0
-            pars.centroids  = bsxfun(@rdivide, summation1, counts1);
+            pars.centroids  = pars.first_learning_rate * bsxfun(@rdivide, summation1, counts1) + ...
+                                (1 - pars.first_learning_rate) * pars.centroids;
             pars.centroids(counts1 == 0, :) = randn(sum(counts1==0),size(pars.centroids, 2));
             summation1  = zeros(pars.hidnum, size(X,2));
             counts1     = zeros(pars.hidnum, 1);        

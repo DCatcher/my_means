@@ -101,6 +101,9 @@ pars.second_layer_init_part = 0.95;
 pars.second_layer_learn_itr = 1;
 pars.first_layer_learn_itr  = 1;
 pars.second_learning_rate   = 0.5;
+pars.first_learning_rate    = 0.5;
+
+pars.second_layer_using_existed_data    = 0;
 % code_type:
 %       0 : soft
 %       1 : hard
