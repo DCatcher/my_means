@@ -18,7 +18,7 @@ a1  = g_non_line(u1, l1);
 a2  = g_non_line(u2, l2);
 
 for t=1:pars.LCA_iteration
-    u1  = pars.eta*(b1-G1*a1-G12*a2) + (1-pars.eta)*u1;
+    u1  = pars.eta*(b1-G1*a1-pars.second_layer_centroids'*a2) + (1-pars.eta)*u1;
     u2  = pars.eta*(b2-G2*a2) + (1-pars.eta)*u2;
     
     a1  = g_non_line(u1, l1, pars.thresh_type);
@@ -31,5 +31,6 @@ for t=1:pars.LCA_iteration
     l2(l2<pars.second_lambda)     = pars.second_lambda;
 end
 
+% disp(max(u2(:, 1:8)))
 S1  = a1';
 S2  = a2';

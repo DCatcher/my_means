@@ -1,11 +1,21 @@
 %% Run the kmeans
 function pars = run_kmeans(pars)
 
+
+if pars.LCA_second_layer==1
+    summation1  = zeros(pars.hidnum, size(pars.X_total,2));
+    summation2  = zeros(pars.LCA_second_hidnum, pars.hidnum);
+    counts1     = zeros(pars.hidnum, 1);        
+    counts2     = zeros(pars.LCA_second_hidnum, 1);        
+end
+
+
 for itr = 1:pars.iterations
     X = pars.X_total(randsample(size(pars.X_total,1), pars.resample_size),:);
     
     pars.cent_corr      = pars.centroids * pars.centroids';
     pars.cent_corr_pos  = max(pars.cent_corr, 0);
+    
     
     if pars.LCA_second_layer==0
         summation = zeros(pars.hidnum, size(X,2));
@@ -95,17 +105,13 @@ for itr = 1:pars.iterations
             mean_fire   = sum(counts)/pars.resample_size;
         end
         
-    
         fprintf('K-means iterations  %d,  mean fire %g, diff %g',...
             itr, mean_fire, pars.diff_cent(end));        
     else
+        X   = X*2;
+        
         pars.second_layer_centroids_expand      = pars.second_layer_centroids * pars.centroids;
         pars.second_layer_cent_corr             = pars.second_layer_centroids_expand * pars.second_layer_centroids_expand';
-        
-        summation1  = zeros(pars.hidnum, size(X,2));
-        summation2  = zeros(pars.LCA_second_hidnum, pars.hidnum);
-        counts1     = zeros(pars.hidnum, 1);        
-        counts2     = zeros(pars.LCA_second_hidnum, 1);
         
         loss        = 0;
         
@@ -131,24 +137,33 @@ for itr = 1:pars.iterations
         pars.old_cent1  = pars.centroids;
         pars.old_cent2  = pars.second_layer_centroids;
         
-        pars.centroids  = bsxfun(@rdivide, summation1, counts1);
-        pars.second_layer_centroids     = bsxfun(@rdivide, summation2, counts2);
-        
-        pars.centroids(counts1 == 0, :) = randn(sum(counts1==0),size(pars.centroids, 2));
-        pars.second_layer_centroids(counts2 == 0, :)    = (rand(sum(counts2 == 0), pars.hidnum) > pars.second_layer_init_part);
-        
-        pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
-        pars.second_layer_centroids      = bsxfun(@rdivide, pars.second_layer_centroids,...
-                                                sqrt(sum(pars.second_layer_centroids.^2, 2)));
-        
-        pars.diff_cent(end+1)   = sqrt(mean(sum((pars.centroids - pars.old_cent1).^2, 2))) + ...
-                                  sqrt(mean(sum((pars.second_layer_centroids - pars.old_cent2).^2, 2)));
         mean_fire1   = sum(counts1)/pars.resample_size;
         mean_fire2   = sum(counts2)/pars.resample_size;
         
+        if mod(itr, pars.first_layer_learn_itr)==0
+            pars.centroids  = bsxfun(@rdivide, summation1, counts1);
+            pars.centroids(counts1 == 0, :) = randn(sum(counts1==0),size(pars.centroids, 2));
+            summation1  = zeros(pars.hidnum, size(X,2));
+            counts1     = zeros(pars.hidnum, 1);        
+            pars.centroids      = bsxfun(@rdivide, pars.centroids, sqrt(sum(pars.centroids.^2, 2)));
+        end
+        
+        if mod(itr, pars.second_layer_learn_itr)==0
+            pars.second_layer_centroids     = pars.second_learning_rate * bsxfun(@rdivide, summation2, counts2) + ...
+                                                (1 - pars.second_learning_rate) * pars.second_layer_centroids;
+            pars.second_layer_centroids(counts2 == 0, :)    = (rand(sum(counts2 == 0), pars.hidnum) > pars.second_layer_init_part);
+            summation2  = zeros(pars.LCA_second_hidnum, pars.hidnum);
+            counts2     = zeros(pars.LCA_second_hidnum, 1);
+            pars.second_layer_centroids      = bsxfun(@rdivide, pars.second_layer_centroids,...
+                                                    sqrt(sum(pars.second_layer_centroids.^2, 2)));
+        end
+        
+        pars.diff_cent(end+1)   = sqrt(mean(sum((pars.centroids - pars.old_cent1).^2, 2))) + ...
+                                  sqrt(mean(sum((pars.second_layer_centroids - pars.old_cent2).^2, 2)));
+        
     
         fprintf('K-means iterations  %d,  mean fire %g, %g, counts none %d, %d, diff %g',...
-            itr, mean_fire1,mean_fire2,sum(counts1==0),sum(counts2==0), pars.diff_cent(end));
+            itr, mean_fire1,mean_fire2,sum(counts1==0),sum(pars.counts2==0), pars.diff_cent(end));
     end
 
     if pars.cal_loss==1

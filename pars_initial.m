@@ -94,11 +94,13 @@ pars.LCA_iteration  = 75;
 pars.LCA_second_layer       = 0;
 pars.LCA_second_hidnum      = 100;
 pars.second_layer_centroids = [];
-pars.second_lambda          = 0.1;
 pars.second_row_num         = 10;
 pars.second_max_show        = 100;
 pars.second_lambda          = 0.05;
-pars.second_layer_init_part = 0.8;
+pars.second_layer_init_part = 0.95;
+pars.second_layer_learn_itr = 1;
+pars.first_layer_learn_itr  = 1;
+pars.second_learning_rate   = 0.5;
 % code_type:
 %       0 : soft
 %       1 : hard
