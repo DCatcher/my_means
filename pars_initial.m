@@ -77,6 +77,8 @@ pars.empty_rate     = 0.5;
 
 pars.show_type      = 0;
 
+pars.save_cent      = 0;
+
 % learn_type:
 %           1   :   Hebbian's learning
 %           2   :   Oja's learning

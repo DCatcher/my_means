@@ -11,6 +11,14 @@ end
 
 
 for itr = 1:pars.iterations
+    if pars.save_cent>0
+        if mod(itr, pars.save_cent)==0
+            pars_tmp    = pars;
+            pars_tmp.X_total    = [];
+            save test_speed_mat pars_tmp;
+        end
+    end
+    
     X = pars.X_total(randsample(size(pars.X_total,1), pars.resample_size),:);
     
     pars.cent_corr      = pars.centroids * pars.centroids';
