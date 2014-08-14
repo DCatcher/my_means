@@ -1,5 +1,5 @@
 %% Prewhiten the images
-% 	The input_path should include a 3-D array 'all_pic_g', and a integer 'frames_per_video'
+% 	The input_path should include a 3-D array 'all_pic_g'
 %		all_pic_g : cells of N1 * N2 * num_frame, double
 %   Output will be:
 %       IMAGES    : cells of N1 * N2 * num_frame, withened, double.
@@ -8,8 +8,8 @@ function prewhiten(input_path, output_path)
 % load d:\dataset\Hollywood2\mat\yk_images_raw
 load(input_path);
 
-% Len_now = length(IMAGES);
-Len_now = 10;
+Len_now = length(all_pic_g);
+% Len_now = 10;
 IMAGES  = cell(1, Len_now);
 
 for ii=1:Len_now
@@ -17,7 +17,7 @@ for ii=1:Len_now
     
     N1      = size(IM_now, 1);
     N2      = size(IM_now, 2);
-    M       =size(IM_now, 3);
+    M       = size(IM_now, 3);
 
     IMAGES_now  = zeros(N1,N2,M);
     [fx, fy]    = meshgrid(-N1/2:N1/2-1, -N2/2:N2/2-1);

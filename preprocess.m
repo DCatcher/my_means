@@ -40,6 +40,7 @@ if pars.second_layer==1
     end
 end
 
+fprintf('load data from %s...\n', pars.data_path);
 load(pars.data_path);
 
 % num_images 	= floor(size(IMAGES,3)/nf)*(nf-pars.frame_num+1);
@@ -48,6 +49,8 @@ num_patches     = pars.samplesize;
 sz              = pars.patchsize;
 pars.X_total 	= zeros(sz^2*pars.frame_num, num_patches);
 totalsamples 	= 0;
+
+fprintf('Sample from data...\n');
 
 for ii=1:num_images
     IMG_now     = IMAGES{ii};
@@ -77,6 +80,9 @@ for ii=1:num_images
         pars.X_total(:,totalsamples) 	= temp;
     end
 end
+
+fprintf('Sampling finish...\n');
+% pause;
 
 if pars.gauss_win==1
     tmp_G_win       = fspecial('gaussian', [pars.patchsize, pars.patchsize], pars.gwin_delta);

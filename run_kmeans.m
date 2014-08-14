@@ -13,9 +13,9 @@ end
 for itr = 1:pars.iterations
     if pars.save_cent>0
         if mod(itr, pars.save_cent)==0
-            pars_tmp    = pars;
-            pars_tmp.X_total    = [];
-            save(pars.save_name,'pars_tmp');
+            pars_old            = pars;
+            pars_old.X_total    = [];
+            save(pars.save_name,'pars_old');
         end
     end
     
