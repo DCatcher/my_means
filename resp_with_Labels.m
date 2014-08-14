@@ -102,7 +102,7 @@ function [S, all_labels, pars]=resp_with_Labels(temp, pars)
         
         u   = zeros(pars.hidnum, m);
         l   = 0.5*max(abs(b));
-        a   = g_non_line(u, l, pars.first_g_pars);
+        a   = g_non_line(u, l, pars.thresh_type, pars.first_g_pars);
         
         for t=1:pars.LCA_iteration
             u   = pars.eta*(b-G*a) + (1-pars.eta)*u;
