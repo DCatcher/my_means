@@ -1,10 +1,6 @@
 %% Calculate the non-linearity    
 function a = g_non_line(u, theta, thresh_type, g_pars)
 
-if ~exist('thresh_type','var')
-    thresh_type = 'soft';
-end
-
 M = size(u,1);
 
 switch thresh_type

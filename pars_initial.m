@@ -63,6 +63,8 @@ pars.time_type      = 1;
 pars.space_bigger   = 0;
 pars.space_type     = 1;
 %   type = 1;  2 times of old patchsize, without any overlap
+%   type = 2:  2 times of old patchsize, with 9 different pathes in it,
+%               half overlap.
 
 pars.soft_coding    = 0;
 pars.stable_stage   = 0;

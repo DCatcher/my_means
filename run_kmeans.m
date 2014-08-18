@@ -172,7 +172,7 @@ for itr = 1:pars.iterations
         
     
         fprintf('K-means iterations  %d,  mean fire %g, %g, counts none %d, %d, diff %g',...
-            itr, mean_fire1,mean_fire2,sum(counts1==0),sum(pars.counts2==0), pars.diff_cent(end));
+            itr, mean_fire1,mean_fire2,sum(pars.counts1==0),sum(pars.counts2==0), pars.diff_cent(end));
     end
 
     if pars.cal_loss==1

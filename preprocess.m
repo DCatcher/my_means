@@ -30,16 +30,6 @@ if isfield(pars, 'soft_coding')==1 && pars.soft_coding==1
     pars.max_L  = min(4*pars.L1, pars.hidnum);
 end
 
-if pars.second_layer==1
-    if pars.time_type==1 && pars.frame_num~=pars.old_frame_num*2 && pars.time_bigger==1
-        error('frame num should be twice the old frame num!\n');
-    end
-    
-    if pars.space_type==1 && pars.patchsize~=pars.old_patchsize*2 && pars.space_bigger==1
-        error('patchsize should be twice the old one!\n');
-    end
-end
-
 fprintf('load data from %s...\n', pars.data_path);
 load(pars.data_path);
 
@@ -115,8 +105,26 @@ if pars.second_layer==1
         error('Second layer must use first layer data!');
     end
     
+    if pars.time_type==1 && pars.frame_num~=pars.old_frame_num*2 && pars.time_bigger==1
+        error('frame num should be twice the old frame num!\n');
+    end
+    
+    if pars.space_type==1 && pars.patchsize~=pars.old_patchsize*2 && pars.space_bigger==1
+        error('patchsize should be twice the old one!\n');
+    end  
+    
+    if pars.space_type==2 && pars.patchsize~=pars.old_patchsize*2 && pars.space_bigger==1
+        error('patchsize should be twice the old one!\n');
+    end
+    
     X_total_reshape     = reshape(pars.X_total, pars.samplesize, ...
                             pars.patchsize^2, pars.frame_num);
+    
+    if isfield(pars_old, 'LCA_coding')==1 && pars_old.LCA_coding==1
+        if isfield(pars_old, 'first_g_pars')==0
+            pars_old.first_g_pars   = pars.first_g_pars;
+        end
+    end
                         
     if pars.time_bigger==0 && pars.space_bigger==0
         temp    = pars.first_layer_centroids*pars.X_total';
@@ -170,6 +178,25 @@ if pars.second_layer==1
                                         fh+1:fh*2;...
                                         fh*2+1:fh*3;...
                                         fh*3+1:fh*4];
+        end
+        
+        if pars.space_type==2
+            pars.space_sepa_num     = 9;
+            sz                      = pars.old_patchsize;
+            fh                      = pars.first_layer_hidnum;
+            pars.space_sepa_inter   = [];
+            pars.X_total_inter      = [];
+            loop_array              = [1, sz/2+1, sz+1];
+            now_index               = 0;
+            for i=1:3
+                for j=1:3
+                    now_index   = now_index + 1;
+                    stx         = loop_array(i);
+                    sty         = loop_array(j);
+                    pars.space_sepa_inter   = [pars.space_sepa_inter; stx, stx+sz-1, sty, sty+sz-1];
+                    pars.X_total_inter      = [pars.X_total_inter; (fh*(now_index-1)+1 : fh*(now_index))];
+                end
+            end
         end
         
         tmp_X_total     = zeros(pars.samplesize, pars.first_layer_hidnum*pars.space_sepa_num);
